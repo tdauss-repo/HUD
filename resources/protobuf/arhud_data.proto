@@ -1,0 +1,269 @@
+syntax = "proto3";
+
+package ignite.arhud.proto;
+
+option cc_enable_arenas = true;
+
+message SpeedData {
+  float speed_val = 1;
+}
+
+
+message KeyPresses {
+  bool left_turn = 1;
+  bool right_turn = 2;
+  bool highbeam = 3;
+  bool hazard = 4;
+  bool seatbelt = 5;
+  bool brake_system = 6;
+  bool abs = 7;
+  bool esc_esp = 8;
+  bool engine_malfunction = 9;
+  bool oil_pressure = 10;
+  bool battery_charging_warning = 11;
+  bool tpms = 12;
+  bool coolant = 13;
+  bool airbag = 14;
+  bool ready_to_drive = 15;
+  bool high_voltage = 16;
+  uint64 battery_charge_percentage = 17;
+  uint64 fuel_percentage = 18;
+  uint64 range_left = 19;
+  bool is_vw_theme = 20;
+}
+
+
+message RadarPmoiObject1 {
+  // The original schema defines exactly 756 float values.
+  // Protobuf represents this as a packed repeated field. Validate that
+  // data_size() == 756 when receiving a complete radar frame.
+  repeated float data = 1 [packed = true];
+  bool is_data_empty = 2;
+}
+
+
+message UiAdjustment {
+  float ui_x = 1;
+  float ui_y = 2;
+  float ui_z = 3;
+  float ui_scale = 4;
+  float ui_rotation_x = 5;
+  float ui_rotation_y = 6;
+  float ui_rotation_z = 7;
+  bool show_ui = 8;
+  bool show_cones = 9;
+  float cone_x_1 = 10;
+  float cone_y_1 = 11;
+  float cone_z_1 = 12;
+  float cone_x_2 = 13;
+  float cone_y_2 = 14;
+  float cone_z_2 = 15;
+  float cone_x_3 = 16;
+  float cone_y_3 = 17;
+  float cone_z_3 = 18;
+  float cone_x_4 = 19;
+  float cone_y_4 = 20;
+  float cone_z_4 = 21;
+  float cone_scale_1 = 22;
+  float cone_rot_x_1 = 23;
+  float cone_rot_y_1 = 24;
+  float cone_rot_z_1 = 25;
+  float cone_scale_2 = 26;
+  float cone_rot_x_2 = 27;
+  float cone_rot_y_2 = 28;
+  float cone_rot_z_2 = 29;
+  float cone_scale_3 = 30;
+  float cone_rot_x_3 = 31;
+  float cone_rot_y_3 = 32;
+  float cone_rot_z_3 = 33;
+  float cone_scale_4 = 34;
+  float cone_rot_x_4 = 35;
+  float cone_rot_y_4 = 36;
+  float cone_rot_z_4 = 37;
+  float radar_rot_x = 38;
+  float radar_rot_y = 39;
+  bool show_shortcuts = 40;
+}
+
+
+message UiAdjustment1 {
+  uint64 logo_type = 1;
+  float logo_pos_x = 2;
+  float logo_pos_z = 3;
+  float logo_pos_y = 4;
+  float logo_scale = 5;
+  float logo_rotate_speed = 6;
+}
+
+
+message MarkerRelated {
+  uint64 marker_type = 1;
+  uint64 info_text_type = 2;
+  float marker_text_pos_x = 3;
+  float marker_text_pos_y = 4;
+  float marker_text_pos_z = 5;
+  float marker_text_rot_x = 6;
+  float marker_text_rot_y = 7;
+  float marker_text_rot_z = 8;
+  float marker_text_scale = 9;
+}
+
+
+message PassengerRelated {
+  uint64 show_passenger_type = 1;
+  bool show_passenger_ui = 2;
+  uint64 ppt_slide_id = 3;
+  float passenger_ui_x = 4;
+  float passenger_ui_y = 5;
+  float passenger_ui_z = 6;
+  float passenger_ui_scale = 7;
+  float passenger_ui_rotation_x = 8;
+  float passenger_ui_rotation_y = 9;
+  float passenger_ui_rotation_z = 10;
+  bool show_widget = 11;
+  float widget_ui_x = 12;
+  float widget_ui_y = 13;
+  float widget_ui_z = 14;
+  float widget_ui_scale = 15;
+  float widget_ui_rotation_x = 16;
+  float widget_ui_rotation_y = 17;
+  float widget_ui_rotation_z = 18;
+}
+
+
+message ViewRelated {
+  bool show_cluster = 1;
+  bool arhud_settings_mode = 2;
+  uint64 selected_ar_asset_id = 3;
+  bool diagnostics_mode = 4;
+  bool show_cone_1 = 5;
+  bool show_cone_2 = 6;
+  bool show_cone_3 = 7;
+  bool show_cone_4 = 8;
+  bool cone_1_outline = 9;
+  bool cone_2_outline = 10;
+  bool cone_3_outline = 11;
+  bool cone_4_outline = 12;
+  bool show_active_text = 13;
+  bool show_disabled_text = 14;
+}
+
+
+message TestMarkerRelated {
+  uint64 test_marker_type = 1;
+  uint64 test_info_text_type = 2;
+  float test_marker_text_pos_x = 3;
+  float test_marker_text_pos_y = 4;
+  float test_marker_text_pos_z = 5;
+  float test_marker_text_rot_x = 6;
+  float test_marker_text_rot_y = 7;
+  float test_marker_text_rot_z = 8;
+  float test_marker_text_scale = 9;
+  float test_marker_pos_x = 10;
+  float test_marker_pos_y = 11;
+  float test_marker_pos_z = 12;
+  float test_marker_rot_x = 13;
+  float test_marker_rot_y = 14;
+  float test_marker_rot_z = 15;
+  float test_marker_scale = 16;
+}
+
+
+message DragonRelated {
+  bool dragon_enabled = 1;
+  float dragon_pos_x = 2;
+  float dragon_pos_y = 3;
+  float dragon_pos_z = 4;
+  float dragon_scale = 5;
+  float dragon_rot_x = 6;
+  float dragon_rot_y = 7;
+  float dragon_rot_z = 8;
+}
+
+
+message PandaRelated {
+  bool panda_enabled = 1;
+  float panda_pos_x = 2;
+  float panda_pos_y = 3;
+  float panda_pos_z = 4;
+  float panda_scale = 5;
+  float panda_rot_x = 6;
+  float panda_rot_y = 7;
+  float panda_rot_z = 8;
+}
+
+message ImuData {
+  uint64 ts = 1;
+
+  float ax = 2;
+  float ay = 3;
+  float az = 4;
+
+  float mx = 5;
+  float my = 6;
+  float mz = 7;
+
+  float gx = 8;
+  float gy = 9;
+  float gz = 10;
+
+  float lqw = 11;
+  float lqx = 12;
+  float lqy = 13;
+  float lqz = 14;
+
+  float heading = 15;
+}
+
+
+message GpsData {
+  double source_lat = 1;
+  double source_long = 2;
+  double destination_lat = 3;
+  double destination_long = 4;
+  float progress = 5;
+}
+
+
+message SystemUpdate {
+  bool ota_enabled = 1;
+  uint64 ota_menu_id = 2;
+  string current_version = 3;
+  string update_version = 4;
+  uint64 ota_progress = 5;
+  string ota_phase = 6;
+  string ota_message = 7;
+  uint64 ota_bytes_done = 8;
+  uint64 ota_bytes_total = 9;
+  uint64 ota_selected_button = 10;
+  float ota_ui_pos_x = 11;
+  float ota_ui_pos_y = 12;
+  float ota_ui_pos_z = 13;
+  float ota_ui_scale = 14;
+  float ota_ui_rot_x = 15;
+  float ota_ui_rot_y = 16;
+  float ota_ui_rot_z = 17;
+}
+
+message RadarConfig {
+  bool is_mirror_filtering_enabled = 1;
+}
+
+// Optional aggregate message for sending the full AR-HUD state in one payload.
+message ArHudData {
+  SpeedData speed_data = 1;
+  KeyPresses key_presses = 2;
+  RadarPmoiObject1 radar_pmoi_object_1 = 3;
+  UiAdjustment ui_adjustment = 4;
+  UiAdjustment1 ui_adjustment_1 = 5;
+  MarkerRelated marker_related = 6;
+  PassengerRelated passenger_related = 7;
+  ViewRelated view_related = 8;
+  TestMarkerRelated test_marker_related = 9;
+  DragonRelated dragon_related = 10;
+  PandaRelated panda_related = 11;
+  SystemUpdate system_update = 12;
+  ImuData imu_data = 13;
+  GpsData gps_data = 14;
+  RadarConfig radar_config = 15;
+}

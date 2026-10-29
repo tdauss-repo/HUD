@@ -1,0 +1,12 @@
+backend:
+  localizer:
+    #Mandatory Parameters
+    wheelbase: 2.69 # (m)
+    track_width: 1.6 # (m)
+    steering_ratio: 0.06
+    gps_to_car_frame_transformation: [0.0,0.0,0.0,0.0,0.0,0.0]
+    imu_to_car_frame_transformation: [0.0,0.0,0.0,0.0,0.0,0.0]
+    imu_angular_velocity_stddev: 0.04987019326190137 # IMU Angular Velocity stddev (rad/s)
+    imu_linear_acceleration_stddev: 0.09969651338021342 # IMU Linear Acceleration stddev (m/s^2)
+    wheelspeeds_based_linear_velocity_stddev: 0.0 # Wheel speeds based Linear velocity stddev (m/s)
+    steering_based_angular_velocity_stddev: 0.0 # Steering based Angular velocity stddev (rad/s)

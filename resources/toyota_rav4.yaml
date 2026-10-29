@@ -1,0 +1,123 @@
+ar:
+    video: true
+    research_visualizer: false
+    # 0 - use UBlox as an input for localizer module
+    # 1 - use SwiftNav as an input for localizer module
+    localization_option: 0
+
+
+topics:
+    attitude: "/navatt"
+    # blindspots: "/carla/blindspots"
+    camera: "/cam_fwd_wide_jpg"
+    comma: "/comma3/vision"
+    # driving_assistants: "/carla/driving_assistants"
+    gnss: "/ublox_gps_node/fix_highprecision"
+    gpsfix: "/swiftnav/gpsfix"
+    hd_map: "/tomtom/hd_map_data"
+    imu: "/ublox_gps_node/imu_raw"
+    instrument_cluster: "/can_cluster"
+    keyboard: "/keyboard_cmd"
+    lead_car: "/delayed_potential_moving_objects"
+    lidar: "/rslidar_points"
+    navigation: "/tomtom/nav_data"
+    steering: "/can_steering"
+    wheel_speeds: "/can_wheelspeeds"
+
+
+ar_player:
+    record_rsbg: false
+    rsbg_filename: "recording.rsbg"
+    studio_schema_path: "../example-projects/__reference-project/reference_project.rs-data-schema"
+    studio_project: "../example-projects/__reference-project/export/resources/data.zip"
+    active_camera: 0
+    cli_arguments: "--quality trilinear --resizable 1 --disable-fps-limit --resources-dir ../example-projects/__reference-project/export/resources/"
+    # player_cli_arguments: "--quality anisotropic --max-anisotropy 16"
+    # note, ^^ crashes in WSL. Likely it's a WSL issue, just like it is with "--msaa 3"
+    dump_config: true
+
+
+research_visualizer:
+    monitor: -1 # Monitor for fullscreen or -1 for windowed mode.
+    ground_plane_z_m: -0.35
+    debug_roadmodel: false
+
+
+camera:
+    image_width: &video_ar_image_width 1920
+    image_height: &video_ar_image_height 1024
+    focal_length: &video_ar_focal_length 0.506261
+    principal_point: &video_ar_principal_point [ 0.00732425, 0.0291983 ]
+    distortion_coeffs_num: &video_ar_distortion_coeffs_num [ 2.15062, 0.356584, 0.0, 0.0 ]
+    distortion_coeffs_den: &video_ar_distortion_coeffs_den [ 3.60349, 2.04522, 0.0, 0.0 ]
+    pose_xyzrpy: &player_camera_xyzrpy [1.6764, -0.105362, 1.05331, 1.65137, 4.18236, 2.90577]
+
+
+hud:
+    fov: 5.38
+
+
+latency_compensation:
+    enabled: false
+    verbose: true
+    sync_to_ros: true  # Match engine time to ROS time for bag playback.
+    frames_per_second: 60.0
+    wait_fraction: 0.5  # Frame time to wait for sensors until rendering.
+    constant_ms: 0
+
+
+navigation:
+    from_ros: true
+    update_rate_hz: 2.0
+    height_above_road_for_guidance_m: 1.0
+    height_above_road_for_poi_m: 2.0
+    use_map_altitude: true                 # Use HD map lane data for altitude estimation
+    map_altitude_max_distance_m: 20.0      # maximum distance to closest lane boundary to use as altitude reference
+    use_waypoint_subsampling: true         # If use waypoint subsampling
+    waypoint_subsample_interval_m: 5.0     # Waypoint subsampling interval
+    poi_file: ""
+    mocked_poi_xyz_m: [50.0, 0.0, 1.0]
+    next_guidance_from_gps: true
+
+
+comma:
+    verbose: false
+    offset_xyzrpy: [2.69, 0.0, 1.25, 0.0, 0.0, 0.0]
+
+
+lane_detector:
+    enable: false
+    visualization_enabled: true
+    verbose: true
+    debug_2d_points: false
+    device_id: 0
+    model_dir: "../ar_sdk/modules/lane_detector/resources"
+    camera_pose_xyzrpy: *player_camera_xyzrpy
+    lens_params:
+        image_width: *video_ar_image_width
+        image_height: *video_ar_image_height
+        focal_length: *video_ar_focal_length
+        principal_point: *video_ar_principal_point
+        distortion_coeffs_num: *video_ar_distortion_coeffs_num
+        distortion_coeffs_den: *video_ar_distortion_coeffs_den
+        lens_limit: 1.1
+    pinhole_focal: 1.2 # For image undistort
+
+
+object_detector:
+    enable: false
+    visualization_enabled: true
+    verbose: true
+    device_id: 0
+    model_dir: "../ar_sdk/modules/object_detector/resources"
+    camera_pose_xyzrpy: *player_camera_xyzrpy
+    lens_params:
+        image_width: *video_ar_image_width
+        image_height: *video_ar_image_height
+        focal_length: *video_ar_focal_length
+        principal_point: *video_ar_principal_point
+        distortion_coeffs_num: *video_ar_distortion_coeffs_num
+        distortion_coeffs_den: *video_ar_distortion_coeffs_den
+        lens_limit: 1.1
+    pinhole_focal: 1.2 # For image undistort
+    confidence_threshold: 0.3 # Minimum confidence for objects to be considered valid
