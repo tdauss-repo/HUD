@@ -1,0 +1,227 @@
+ar_player:
+  cli_arguments: --quality trilinear --resizable 1
+  debug_dump_startup_cfg: false
+  project: ""
+backend:
+  buffer_capacity:
+    attitude: 15
+    camera_frame: 15
+    gnss: 15
+    imu: 15
+    lead_car: 15
+    lead_car_bearing: 15
+    lead_car_position: 15
+    point_cloud: 15
+    steering: 15
+    wheel_speeds: 15
+    road_map: 15
+    road_object: 15
+  enable_visualization: false
+  gnss2ego_conversion:
+    blending_distance_m: 120
+    lateral_correction_threshold_m: 10
+    tracking_distance_m: 100
+    use_vio_for_waypoints: false
+  lead_car_tracking:
+    align_with_road_model: false
+    enabled: true
+    filter_initialization_period: 2
+    filter_timeout: 1
+    process_noise_covariance_linear_model:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    process_noise_covariance_unicycle_model:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 0.1
+      - 0.1
+      - 0.1
+    use_linear_model: false
+    verbose: false
+  localizer:
+    camera_xyzrpy:
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+    debug: false
+    distortion_coeffs_den:
+      - 0
+      - 0
+      - 0
+      - 0
+    distortion_coeffs_num:
+      - 0
+      - 0
+      - 0
+      - 0
+    filter_timeout: 1
+    fm_check_visibility: 1
+    fm_estimate_covariance: 0
+    fm_estimation_threshold: 1
+    fm_initial_outlier_rejection_threshold: 5
+    fm_max_3d_point_dist: 200
+    fm_max_epipolar_error: 1
+    fm_min_observations_num: 5
+    fm_min_tracked_points_num: 10
+    fm_optimization_outlier_rejection_threshold: 1
+    fm_optimization_window_size: 10
+    fm_save_3d_points: 0
+    fm_visualize: 0
+    focal_length: 1
+    fused_loca_visualize: 0
+    fused_loca_vo_initialization_period: 50
+    gftt_column_margin_points_roi: 250
+    gftt_debug: 0
+    gftt_enable_reverse_optical_flow: 1
+    gftt_grid_cell_size: 0
+    gftt_hint_rejection_threshold: 7
+    gftt_max_features_per_frame: 500
+    gftt_min_distance_btw_features: 35
+    gftt_no_of_pyramids: 3
+    gftt_quality_level: 1e-11
+    gftt_ransac_threshold: 1
+    gftt_row_margin_points_roi: 0
+    gftt_use_model_distortion: 0
+    gftt_use_opencl: 1
+    gftt_use_prediction: 1
+    gps_to_car_frame_transformation:
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+    image_height: 1024
+    image_width: 1920
+    imu_acc_rejection_threshold: 0.1
+    imu_angular_velocity_stddev: 0.0015
+    imu_linear_acceleration_stddev: 0.035
+    imu_to_car_frame_transformation:
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+      - 0
+    initial_estimate_covariance:
+      - 100
+      - 100
+      - 100
+      - 10
+      - 10
+      - 10
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 0.1
+      - 0.1
+      - 0.1
+    lens_limit: 2
+    opt_verbose: 0
+    principal_point:
+      - 0
+      - 0
+    process_noise_covariance:
+      - 0.1
+      - 0.1
+      - 0.1
+      - 0.001
+      - 0.001
+      - 0.001
+      - 0.01
+      - 1e-9
+      - 1e-9
+      - 0.001
+      - 0.001
+      - 0.001
+      - 0.001
+      - 0.001
+      - 0.001
+    steering_based_angular_velocity_stddev: 0.1
+    steering_ratio: 0.06
+    track_width: 1.6
+    use_gps_altitude: "true"
+    wheelbase: 2.69
+    wheelspeeds_based_linear_velocity_stddev: 0.001
+    time_ordered: false
+    time_ordered_span_ns: 500000000
+  localizer_config_node_path: ""
+  roadmodel:
+    car_to_ground_height_m: 0.35
+    disable_roadmodel: false
+    ground_filter:
+      max_angle_rad: 0.5
+      radial_bins: 50
+      range_bin_length: 7
+    not_enough_lidar_points_threshold: 45000
+    polynomial_estimator:
+      estimation_variance_bias: 5
+      estimation_variance_factor: 5
+      inlier_threshold_m: 0.1
+      l2_regularization:
+        - 0
+        - 0.25
+        - 0.25
+        - 0.25
+        - 0.25
+        - 0.25
+      max_iters: 10
+      min_inliers: 100
+      process_noise: 0.01
+    trivial_algo_variance: 10
+    use_lidar: false
+    use_localizer: true
+    verbose: false
+  stationary_velocity_threshold_mps: 0.01
+  use_visual_localizer: false
+  worker_thread_wakeup_rate_hz: 60
+  lane_tracking:
+    bezier_process_noise_stddev:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    enabled: false
+    fuse_map: false
+    map_lane_stddev:
+      - 0.5
+      - 0.5
+      - 0.5
+    method: bezier
+    output_polyline: false
+    output_polynomial: false
+    polynomial_lane_stddev:
+      - 1
+      - 0.5
+      - 0.1
+      - 0.05
+    polynomial_point_stddev:
+      - 1
+      - 1
+    polynomial_process_noise_stddev:
+      - 0.5
+      - 0.5
+      - 0.5
+      - 0.5
+    predict: none
+    use_provided_errors: false
+dump_timing_stats: false
+psl: ""
+psl_config_file: ""

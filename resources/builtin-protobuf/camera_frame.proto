@@ -1,0 +1,17 @@
+syntax = "proto3";
+package rocksolid.builtin;
+
+message CameraFrame
+{
+    enum Type {
+        RGB8 = 0;
+        RGBA8 = 1;
+        JPEG = 2;
+    }
+
+    uint64 timestamp = 1;
+    Type type = 2;
+    uint32 width = 3;
+    uint32 height = 4;
+    bytes data = 5;
+}

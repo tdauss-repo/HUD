@@ -1,0 +1,383 @@
+# note, all relative paths are considered to be relative to current working directory!
+
+# path name of a platform support library to load. If no extension is specified, - will add .dll on Windows or .so on Linux.
+psl: "ref_platform"
+
+# If the PSL requires configuration file, path to it can be set here. Another option - pass it as a second CLI argument
+# to the Engine executable.  In both cases, .user extension will first cause the engine to search for fname.user.yaml
+# file and if it isn't found, for fname.yaml
+# psl_config_file: "resources/my_psl_config.user"
+
+# `ar_player` object applies only to `rocksolid_ar` frontend (is ignored for other frontends) and describes startup
+# requirements of the AR Player.
+# It's irrelevant for the ref_platform PSL, so it's commented out and is left here only for showing existence of the
+# options
+# ar_player:
+    # Sets a path to a project to load by the Player
+    # assuming that CWD is the repo root
+    # project: "./platforms/toyota_rav4/player-assets/reference-project/resources/data.zip"
+
+    # Sets Player's startup argument that are passed as command line arguments in a standalone case
+    #cli_arguments: "--quality anisotropic --max-anisotropy 16"
+    # note, ^^ crashes in WSL. Likely it's a WSL issue, just like it is with "--msaa 3"
+    # cli_arguments: "--quality trilinear --resizable 1"
+
+    # Controls whether the engine should dump Player's startup configuration before attempting to launch AR Player.
+    # Note, that it's true by default to alleviate debugging.
+    # debug_dump_startup_cfg: true
+
+# "backend" object contains options for the Engine backend itself
+backend:
+    # frequency with which the engine outputs/exports processed information
+    worker_thread_wakeup_rate_hz: 30
+
+    # internal buffers capacity.
+    # Buffer capacity should be so that it could contain data for several frames (assuming that Engine could
+    # skip few frames processing due to various circumstances. For example, if we have a signal source refreshing data
+    # at 150hz rate, then if the engine process data at 30hz rate and we want it not to drop data for 5 frames, then
+    # the corresponding buffer capacity should be at least (210/30)*5=5*5=25 elements.
+    # Minimal capacity for each buffer is 1
+    buffer_capacity:
+        attitude: 15
+        gnss: 15
+        imu: 15
+        steering: 15
+        wheel_speeds: 15
+        camera_frame: 15
+        point_cloud: 15
+        lead_car: 15
+        lead_car_bearing: 15
+        lead_car_position: 15
+        road_object: 15
+        road_map: 15
+
+    enable_visualization: false
+
+    # parameters for RoadModelWrapper
+    # removing/commenting whole section automatically disables RM/GPA compensation
+    roadmodel:
+        enabled: false
+        verbose: false # additional logging output
+        trivial_algo_variance: 10 # uncertainty of trivial update (larger value -> more smoothing)
+        car_to_ground_height_m: 0.9
+        use_lidar: false # if enabled, advanced "lidar-based" algo is used
+        not_enough_lidar_points_threshold: 45000 # clouds with less points are ignored
+
+    # parameters for LeadCarWrapper
+    # removing/commenting whole section automatically disables lead car tracking
+    lead_car_tracking:
+        enabled: true
+        verbose: false # additional logging output
+        align_with_road_model: true
+        use_linear_model: false
+        filter_timeout: 2.0 # Filter timeout in seconds.
+        filter_initialization_period: 2 # Number of observations required to start predicting.
+        process_noise_covariance_unicycle_model: [1.0, 1.0, 1.0, 1.0, 1.0, 0.1, 0.1, 0.1]
+        process_noise_covariance_linear_model: [ 2.0, 2.0, 1.0, 5.0, 1.0, 5.0 ]
+
+    # parameters for GnssToIso8855
+    gnss2ego_conversion:
+        lateral_correction_threshold_m: 10.0 # lateral correction is not applied, if it's larger than that value
+        # flag enabling using VIO for waypoints placement
+        use_vio_for_waypoints: false
+
+    use_visual_localizer: false
+
+    # "stationary mode" detection threshold
+    stationary_velocity_threshold_mps: 0.01
+
+    localizer:
+        #Mandatory Parameters
+        wheelbase: 2.69 # (m)
+        track_width: 1.61 # (m)
+        steering_ratio: 0.06
+        gps_to_car_frame_transformation: [-0.00, -0.0, -0.0, # GPS translation from car frame x,y,z(m)
+              0.0, 0.0, 0.0] # GPS Rotation from car frame r,p,y (rad)
+        imu_to_car_frame_transformation: [0.0,0.0,0.0, # IMU Translation from car frame x,y,z (m)
+                  -0.00, -0.0,-0.00] # IMU Rotation from car frame r,p,y(rad)
+        imu_angular_velocity_stddev: 0.0014189223404602056 # IMU Angular Velocity stddev (rad/s)
+        imu_linear_acceleration_stddev: 0.034324494842847735 # IMU Linear Acceleration stddev (m/s^2)
+        wheelspeeds_based_linear_velocity_stddev: 1.0e-3 # Wheel speeds based Linear velocity stddev (m/s)
+        steering_based_angular_velocity_stddev: 0.1 # Steering based Angular velocity stddev (rad/s)
+
+        #Optional Parameters
+        debug: false #debug print on the screen
+        filter_timeout: 1.0 #Timeout of filter(s).
+        imu_acc_rejection_threshold: 0.1 # IMU Acceleration threshold
+        process_noise_covariance: [1.0e-1, 1.0e-1, 1.0e-1, 1.0e-3, 1.0e-3, 1.0e-3, 1.0e-2, 1.0e-9, 1.0e-9, 1.0e-3, 1.0e-3, 1.0e-3, 1.0e-3, 1.0e-3, 1.0e-3] # Process noise covariance for filter
+        initial_estimate_covariance: [100.0, 100.0, 100.0, 10.0, 10.0, 10.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.1, 0.1, 0.1] # Initial estimate covariance for filter
+        use_gps_altitude: true # Integrate GPS altitude to the filter, if the data is dependable
+
+        #Mandatory VIO parameters
+        focal_length: 0.506261 # New camera parameters estimates
+        distortion_coeffs_num: [ 2.15062, 0.356584, 0.0, 0.0 ]
+        distortion_coeffs_den: [ 3.60349, 2.04522, 0.0, 0.0 ]
+
+        principal_point: [ 0.00732425, 0.0291983 ]
+        lens_limit: 1.1
+        image_width: 1920
+        image_height: 1024
+
+        ##GoodFeaturesToTrack parameters
+        gftt_max_features_per_frame: 500     # max feature number in feature tracking
+        gftt_min_distance_btw_features: 35.0 # min distance between two features in pixels
+        gftt_quality_level: 0.00000000001    # quality level of features
+        gftt_ransac_threshold: 1.0           # ransac threshold (pixel)
+        gftt_hint_rejection_threshold: 7.0   # hint rejection threshold (pixel)
+        gftt_no_of_pyramids: 3               # Pyramid level for Optical flow
+        gftt_enable_reverse_optical_flow: 1  # perform forward and backward optical flow to improve feature tracking accuracy
+        gftt_row_margin_points_roi: 0        # margin in x direction from image borders where points are rejected
+        gftt_column_margin_points_roi: 250   # margin in y direction from image borders where points are rejected
+        gftt_grid_cell_size: 0               # grid cell size for feature detection as a multiple of gftt_min_distance_btw_features. If 0, detection in grid disabled
+        gftt_use_prediction: 1               # Use prediction with feedback from pose estimator
+        gftt_use_opencl: 1                   # Use OpenCL implementation for points detection
+        gftt_use_model_distortion: 0         # model distortion for feature detection
+        gftt_debug: 0                        # debug prints for gftt module
+
+        ## FM camera pose estimator parameters
+        fm_max_3d_point_dist: 200.0 # max distance from camera for 3D point to be triangulated. In the units of VO, which uses the same scale as the one in the hints provided, most of the time meters
+        fm_max_epipolar_error: 1.0 # max value in pixels of epipolar error for a point to be considered as inlier in triangulation
+        fm_min_tracked_points_num: 10 # minimal number of inliers to estimate camera movement
+        fm_min_observations_num: 5 # minimal number of frames from which a point should be observed to be an inlier
+        fm_optimization_window_size: 10 # size of the window in number frames for which the optimization is used
+        fm_estimation_threshold: 1.0 # reprojection error threshold used in fundamental matrix estimation
+        fm_initial_outlier_rejection_threshold: 5.0 # reprojection error threshold used in initial outliers rejection
+        fm_optimization_outlier_rejection_threshold: 1.0 # reprojection error threshold used in outliers rejection after optimization
+        fm_check_visibility: 1 # check if point is visible in the camera in outlier rejection
+        fm_estimate_covariance: 0
+        fm_visualize: 0
+        fm_save_3d_points: 0
+
+        ##Camera Extrinsic Parameters
+        camera_xyzrpy: [1.6764, 0.005362, 1.05331, -0.148635, 0.982359, -0.09423]
+
+        # FusedLocalization parameters
+        fused_loca_visualize: 0
+        fused_loca_vo_initialization_period: 50 # number of GPS readings to wait before using VO output
+
+        # Optimization parameters
+        opt_verbose: 0
+
+
+    lane_tracking:
+        method: "bezier"
+        output_polynomial: false
+        output_polyline: true
+        fuse_map: false
+        use_provided_errors: false
+
+# timing_stats object define a collection of configurations of various predefined measurement units. These individual
+# configurations are represented by TimingStatsConfig structure in the code.
+# All entries and the whole timing_stats object are optional. Absense of non-leaf object X definition, or having
+# X_disabled:true means the whole counter/measurement unit it describes is disabled and is not used.
+# NOTE: if the Engine is compiled without PERF_STATS_INSTRUMENTATION preprocessor definition (-DAR_PERF_STATS=ON flag,
+# which is OFF by default!), the object is ignored entirely.
+dump_timing_stats: true
+# timing_stats_disabled: true # uncomment to disable whole stats reporting
+timing_stats:
+    # Defines default values for all other instances of TimingStatsConfig described inside current object. Essentially,
+    # it's here to redefine hardcoded values of default constructor of TimingStatsConfig. If disabled or nor defined, a
+    # default constucted TimingStatsConfig will be used where applicable.
+    # This object contains details comments about ways to initialize TimingStatsConfig members. Note, that some
+    # variables aren't stored in TimingStatsConfig, but are used to initialize other members. This means, they aren't
+    # inherited and the values they affect MUST be properly initialized in derived configs should they differ from
+    # the default.
+    default:
+        # which percentiles to trace, a vector of double. Values must be in range of (0,100) (not including borders,
+        # which are already included implicitly)
+        # Also one could use `quantiles` parameter, but its values must be in range (0,1).
+        quantiles_perc: [1, 5, 25, 50, 75, 95, 99]
+
+        # `reporting_period_seconds`:int parameter sets how frequently in seconds the statistics gathered over that period
+        # should be reported. Should be useful to debugging some local timing issues, or for controlling live data
+        # stream in a car.
+        # A negative value disable live reporting, you'll only see total stats on PSL shutdown.
+        reporting_period_seconds: -1
+
+        # Usually it's enough to see a full statistics gathered over the whole runtime on shutdown, so this just
+        # disables runtime reporting (equvalent to setting reporting_period_seconds: -1, but doesn't break useful preset
+        # value, so with this line live reporting is essentially disabled even though reporting_period_seconds is positive)
+        # Enable reporting (set reporting_period_seconds_disabled to false) when running live in a car to track data
+        # quality live.
+        # NOTE: this variable isn't stored in actual TimingStatsConfig object. It just sets reporting_period_seconds: -1
+        # so to enable reporting in inherited confins, you need to explicitly set there reporting_period_seconds to some
+        # positive number.
+        reporting_period_seconds_disabled: true
+
+        # Some code starts working immediately on PSL start, but its stats are meaningless since no actual number
+        # crunching are happening. This `ignore_first_seconds`:int parameter defines a period in seconds, during which all
+        # measurement calls are ignored and does not influence stats.
+        # WARNING: to meaningfully use small values here, such as 1, ensure the PSL you're using will immediately supply
+        # the data right after a startup.
+        ignore_first_seconds: 3
+
+        # `count_larger_ns` / `count_smaller_ns` are used to define a number of nanoseconds (as double) for upper and lower
+        # threshold of a measured event duration. Setting this thresholds will make reporting appear only if there'll be
+        # at least one deviation above/below the threshold. See also `report_all`:bool flag, that will show the stats
+        # irrespective whether thresholds were reached.
+        # By default (when not set or disabled), `count_larger_ns` and `count_smaller_ns` are set to 0.
+        count_larger_ns: 0
+        count_smaller_ns: 0
+
+        # Some measuments units measure things happening at an expected certain rate. In that case,
+        # the following additional parameters could be used to set or override `count_larger_ns` / `count_smaller_ns`
+        # absolute thresholds: `expected_rate_hz`, `count_larger_ns_rel_mul` and `count_smaller_ns_rel_mul`. These
+        # double-typed parameters define thresholds in terms of multiples of expected duration set by `expected_rate_hz`.
+        # So, for example, if we expect forward camera to feed an image at 30hz rate and are interested to get alerted
+        # if the frame rate drop 10% (difference between succeeding timestamps become larger 10%), then we should define
+        # `expected_rate_hz:30` and `count_larger_ns_rel_mul:1.1`.
+        expected_rate_hz: 0    # NOTE, these vars are used to compute count_larger_ns/count_smaller_ns vars, so
+        count_larger_ns_rel_mul: 1.1   # they aren't really stored in the default config object and hence have no effect
+        count_smaller_ns_rel_mul: 0.9  # on it and derived configs! You have to set them explicitly where you need them!
+
+        # when count_larger_ns>0 or count_smaller_ns>0, and when no over the threshold values are recorded, by default
+        # you will not see any report. Use report_all: true to force output stats even in that case
+        report_all: false
+
+        # When TimingStats is configured to invoke an external duration recorder (such as logging to Rerun),
+        # this allows to enable or disable passing actual data to recorder. Otherwise no effect.
+        pass_to_recorder: true
+
+    # Each leaf object essentially defines a non-default content of TimingStatsConfig structure that control a behaviour
+    # of one or more measurement units in the code.
+    #
+    # Each leaf object named `X` have an implicit `X_disabled` sibling boolean value. If `X_disabled` exists and is set
+    # to true, then corresponding measurement units are not created and measurements aren't done, otherwise it has no
+    # effect. If object `X` is expected, but not found / defined, corresponding measurement units will be created with
+    # configuration by default. Usually `X` corresponds to `ar::supplemental::perf::TimingStatsT<> stats_X;` object in
+    # the code. Multiple objects using the same config should start with a common `stats_X` variable name prefix. `X`
+    # should be unique for the whole source code of the binary.
+
+    # settings for tracking workerThreadFuncImpl() loop.
+    thread_loop:
+        expected_rate_hz: 30
+        count_larger_ns_rel_mul: 1.1    # values could deviate from rate significantly, which is fine unless
+        count_smaller_ns_rel_mul: 0.9   # frames gets skipped
+        report_all: false            # report only if measurements are out of bounds ^^
+
+    # settings for tracking localizer_.localizationOutput() duration
+    localization_output_disabled: true # it's very fast, so likely there's no need to track it
+    localization_output:
+        count_larger_ns_rel_mul: 0.95
+        report_all: true    # we're interested to always see a full timing distribution anyway
+        quantiles_perc: [50, 75, 90, 95, 99]
+
+    # object describing counters in visual odometry
+    vio:
+        # Tracks a real duration of processCameraData() call until it finishes (possibly asynchronously) processing
+        # of the camera frame
+        processCameraData_disabled: true
+        processCameraData:
+            expected_rate_hz: 30
+            count_larger_ns_rel_mul: 0.8    # count measurements that took longer than this value*expected_rate_hz
+
+        # Duration of estimatePose() call including a mutex acquisition
+        # estimatePose_ext_disabled: true
+        estimatePose_ext:
+            expected_rate_hz: 30
+            count_larger_ns_rel_mul: 0.8
+
+        # Raw duration of estimatePose() call (excluding a mutex acquisition)
+        estimatePose_disabled: true
+        estimatePose:
+            expected_rate_hz: 30
+            count_larger_ns_rel_mul: 0.8
+
+        # collection of counters for FMCameraPoseEstimator
+        pose_estimator:
+            # Duration of points tracking algo
+            points_tracking_disabled: true
+            points_tracking:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Duration of initial call to estimatePoseFM()
+            initial_pose_estimation_disabled: true
+            initial_pose_estimation:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Duration of initial call to map_optimizer_.rejectOutliers()
+            initial_outliers_rejection_disabled: true
+            initial_outliers_rejection:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Duration of call to extendMap()
+            map_extension_disabled: true
+            map_extension:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Duration of call to rescaleMap()
+            rescaling_disabled: true
+            rescaling:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Duration of map optimization algo
+            map_optimization_disabled: true
+            map_optimization:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Duration of refining call to map_optimizer_.rejectOutliers()
+            refining_outliers_rejection_disabled: true
+            refining_outliers_rejection:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Duration of map_.shrinkHistory algo
+            shrinking_history_disabled: true
+            shrinking_history:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+        # PMCs for map_optimization.hpp
+        optimization:
+            # Duration of optimizer data preparation routine
+            data_preparation:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Duration of running optimizer solver
+            solver:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+        # PMCs of feature trackers (gftt_tracker.hpp)
+        tracker:
+            # Cost of converting camera frames into required internal representation
+            prepare_buffers:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Cost of using the prediction of a camera pose to estimate new positions of points to track
+            predict_points:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Cost of cv::calcOpticalFlowPyrLK()
+            forward_of:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Cost of the whole flow back logic necessary to reduce the error in the optical flow
+            reverse_of:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Cost of feature rejection
+            features_rejection:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Cost of drawing black circles over existing features for mask
+            mask_drawing:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
+
+            # Cost of the detection loop
+            detection:
+                expected_rate_hz: 30
+                count_larger_ns_rel_mul: 0.8
