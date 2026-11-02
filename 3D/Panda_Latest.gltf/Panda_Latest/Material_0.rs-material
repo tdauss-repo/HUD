@@ -1,0 +1,80 @@
+{
+  "alphaMode": "kOpaque",
+  "doubleSided": true,
+  "props": {
+    "_identifier": "com.basemark.ar-studio.material.metallic-roughness",
+    "basecolor": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "basecolorTextureInfo": {
+      "textureId": 7107878192861936880,
+      "uvIndex": 0,
+      "uvPosition": [
+        0,
+        0
+      ],
+      "uvScale": [
+        1,
+        1
+      ]
+    },
+    "metallicFactor": 1,
+    "roughnessFactor": 1,
+    "metallicRoughnessTextureInfo": {
+      "textureId": 13867440056278667069,
+      "uvIndex": 0,
+      "uvPosition": [
+        0,
+        0
+      ],
+      "uvScale": [
+        1,
+        1
+      ]
+    },
+    "normalTextureInfo": {
+      "textureId": 6948015949139988297,
+      "uvIndex": 0,
+      "uvPosition": [
+        0,
+        0
+      ],
+      "uvScale": [
+        1,
+        1
+      ]
+    },
+    "occlusionTextureInfo": {
+      "uvIndex": 0,
+      "uvPosition": [
+        0,
+        0
+      ],
+      "uvScale": [
+        1,
+        1
+      ]
+    },
+    "emissivecolor": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "emissiveTextureInfo": {
+      "textureId": 15803291667459787436,
+      "uvIndex": 0,
+      "uvPosition": [
+        0,
+        0
+      ],
+      "uvScale": [
+        1,
+        1
+      ]
+    }
+  }
+}
