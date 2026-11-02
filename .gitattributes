@@ -2,3 +2,8 @@
 /lib/libAR_SDK.so.0.5.0 filter=lfs diff=lfs merge=lfs -text
 /lib/librocksolidArPlayer.so filter=lfs diff=lfs merge=lfs -text
 /live_decode filter=lfs diff=lfs merge=lfs -text
+Assets/3D/**/*.bin filter=lfs diff=lfs merge=lfs -text
+Assets/3D/**/*.png filter=lfs diff=lfs merge=lfs -text
+Assets/3D/Dragon.gltf/Image_0.jpg filter=lfs diff=lfs merge=lfs -text
+Assets/3D/Dragon.gltf/Image_1.jpg filter=lfs diff=lfs merge=lfs -text
+Assets/3D/Dragon.gltf/Image_2.jpg filter=lfs diff=lfs merge=lfs -text
